@@ -7,6 +7,12 @@ _work_material/
 ## Eclipse
 #################
 
+.hg/
+_release/
+_work_material/
+*backups/
+
+
 *.pydevproject
 .project
 .metadata
