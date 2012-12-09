@@ -1,13 +1,11 @@
 //================================================================================
 // WeldBot.
 //================================================================================
-// test
 class WeldBot extends Pawn
   Config(WeldBot);
 
 #exec TEXTURE IMPORT COMPRESS NAME="SetupIcon" FILE="SetupIcon.dds" FORMAT=DXT5 LODSET=5 FLAGS=2 MIPS=OFF MASKED=1
 #exec OBJ LOAD FILE=KF_LAWSnd.uax
-//#exec OBJ LOAD FILE=..\Animations\chippoDT_A.ukx
 #exec OBJ LOAD FILE=chippoDT_A.ukx
 
 var WeldBotSetupIcon WeldBotSetupIcon;
