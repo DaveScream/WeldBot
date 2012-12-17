@@ -51,7 +51,9 @@ var bool bLangChecked, bLangCheckedClient;
 var() Actor HomeActor;
 var() Actor WeldTarget, WeldTargetClient;
 var	vector WeldTargetLocation;
-var() float MaxDistanceToOwner, MaxShootDistance;
+
+var() float MaxDistanceToOwner, MaxDistanceToOwnerSq;
+var() float MaxShootDistance, MaxShootDistanceSq;
 
 var int ServerHealth, ClientHealth;
 
@@ -690,6 +692,7 @@ simulated function ClientSetBotName()
 //--------------------------------------------------------------------------------------------------
 function SetBotName(string S)
 {
+	M("SetBotName"@S);
 	if (Len(S) > 0)
 	{
 		BotName=S;
@@ -710,6 +713,7 @@ function SetDistance(float D)
 	{
 		MaxDistanceToOwner = D;
 		RepInfo.Distance = D;
+		InitSquareValues();
 	}
 }
 //--------------------------------------------------------------------------------------------------
@@ -835,11 +839,20 @@ simulated function SetOwningPlayer(Pawn Other, WeldBotGun W, optional bool bNoti
 	return "";
 }*/
 //--------------------------------------------------------------------------------------------------
+function InitSquareValues()
+{
+	MaxShootDistanceSq = Square(MaxShootDistance);
+	MaxDistanceToOwnerSq = Square(MaxDistanceToOwner);
+}
+//--------------------------------------------------------------------------------------------------
 event PostBeginPlay()
 {
 	local Mutator M;
-	
+
 	Super.PostBeginPlay();
+	
+	// переводим значения дистанции в квадратный корень, чтобы облегчить вычисления
+	InitSquareValues();
 	
 	if ( ControllerClass != None && Controller == None )
 		Controller = Spawn(ControllerClass);
@@ -1270,7 +1283,7 @@ simulated function BlowUp(Vector HitLocation)
 //--------------------------------------------------------------------------------------------------
 function M(string in)  // for debugging
 {
-	PlayerController(OwnerPawn.Controller).ClientMessage(in);
+	PlayerController(OwnerPawn.Controller).ClientMessage("WeldBot->"$in);
 }
 //--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------
@@ -1280,8 +1293,8 @@ defaultproperties
 	MSG_ModeWeldDoors="Holding doors"
 	OwnerText="Owner"
 	DefaultBotName="Welding bot"
-	MaxDistanceToOwner=360000.0 //160000.0 если бот дальше этого значения, он бежит к хозяину
-	MaxShootDistance=14000.0 //12000.0
+	MaxDistanceToOwner=600.0 //360000.0
+	MaxShootDistance=120.0 //14000.0
 	WeldSpeed=1 //2
 	SentryHealth=5000 //5000
 	Health=5000
